@@ -1,0 +1,18 @@
+%%pyspark
+
+spark.sql ("""
+  MERGE INTO destination_table as tgt
+  USING source_table as src
+    ON src.column1 = trg.column1  -- this can be a primary key but not always
+
+    WHEN MATCHED AND 
+      (
+        src.column1 <> tgt.column1  -- which means not equal to (can also use != )
+        src.column2 <> tgt.column2
+        src.column3 <> tgt.column3
+      )
+    THEN
+      UPDATE SET *
+    WHEN NOT MATCHED THEN
+      INSERT *
+""")
