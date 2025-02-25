@@ -1,0 +1,27 @@
+CREATE PROCEDURE sp_upsert
+AS
+BEGIN
+
+  -- Update existing records based on matching id
+  UPDATE dest
+  SET
+    dest.id = src.id,
+    dest.column1 = src.column1,
+    dest.column2 = src.column2,
+    dest.column3 = src.column3
+  FROM destination_table AS dest
+  INNER JOIN source_table AS src
+    ON dest.id = src.id  -- condition to match records between source and destination tables -- this is usually the PK, but not always.
+  
+  -- Insert new records that do not exist in the target table
+  INSERT INTO destination_table AS dest 
+    (dest.id, dest.column1, dest.column2, dest.column3)
+  SELECT
+    (src.id, src.column1, src.column2, src.column3)
+  FROM source_table AS src
+  WHERE NOT EXISTS (
+    SELECT 1 FROM destination_table AS dest
+    WHERE dest.id = src.id
+  );
+
+END;
