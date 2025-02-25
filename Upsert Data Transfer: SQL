@@ -1,0 +1,18 @@
+-- For SQL Server, the preferred method for performing an upsert is using the MERGE statement.
+
+MERGE INTO destination_table AS dest
+USING source_table AS src
+    ON dest.id = src.id  -- condition to match records between source and destination tables -- this is usually the PK, but not always.
+
+WHEN MATCHED THEN
+    UPDATE SET 
+        dest.column1 = src.column1,
+        dest.column2 = src.column2,
+        dest.column3 = src.column3,
+
+        -- Add additional columns as needed
+        dest.updated_at = GETDATE()  -- Use GETDATE() to update timestamp (or CURRENT_TIMESTAMP)
+
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (id, column1, column2, column3, created_at)
+      VALUES (src.id, src.column1, src.column2, src.column3, GETDATE());
