@@ -1,4 +1,4 @@
-CREATE PROCEDURE sp_upsert
+CREATE PROCEDURE sp_upsert_tableName
 AS
 BEGIN
 
